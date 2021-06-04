@@ -21,9 +21,9 @@ public class OrangeCloudPage extends BasePage {
         return currentUrl;
     }
 
-    public GoogleSearchPage clickOnManagedAppLink ()  {
+    public OrangeCloudPage clickOnManagedAppLink ()  {
         findElement(manageAppLink).click();
 
-        return new GoogleSearchPage(driver);
+        return this;
     }
 }

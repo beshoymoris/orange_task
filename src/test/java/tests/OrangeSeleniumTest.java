@@ -18,6 +18,7 @@ public class OrangeSeleniumTest extends BaseTest{
     String searchData = ConfigFileReader.getProperty("searchData");
     String dropDownWord = ConfigFileReader.getProperty("search");
     String managedApp = ConfigFileReader.getProperty("manageApplication");
+    String dropDownList = ConfigFileReader.getProperty("list");
 
 
     @Test

@@ -22,13 +22,10 @@ public class OrangeWebsitePage extends BasePage {
         return currentUrl;
     }
 
-    public GoogleSearchPage clickOnAllProductFrmSolution ()  {
+    public OrangeProductsPage clickOnAllProductFrmSolution ()  {
         findElement(solutionsLink).click();
         moveToElement(solutionsMenu);
-        int x =findElements(solutionsMenu).size();
-        //list appear empty
-        for (int i = 0 ; i<x ; i++)System.out.println(findElement(solutionsMenu).getText());
         findElement(allProducts).click();
-        return new GoogleSearchPage(driver);
+        return new OrangeProductsPage(driver);
     }
 }

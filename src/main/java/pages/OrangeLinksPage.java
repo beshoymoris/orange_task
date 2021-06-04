@@ -14,8 +14,8 @@ public class OrangeLinksPage extends BasePage {
         super(driver);
     }
 
-    public GoogleSearchPage clickOnFirstLink ()  {
+    public OrangeWebsitePage clickOnFirstLink ()  {
         findElement(orangeLink).click();
-        return new GoogleSearchPage(driver);
+        return new OrangeWebsitePage(driver);
     }
 }
