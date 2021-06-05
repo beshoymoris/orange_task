@@ -15,24 +15,25 @@ public class OrangeSeleniumTest extends BaseTest{
    private OrangeProductsPage orangeProductsPage;
    private OrangeCloudPage orangeCloudPage ;
 
-    String searchData = ConfigFileReader.getProperty("searchData");
-    String dropDownWord = ConfigFileReader.getProperty("search");
+    String googleSearchData = ConfigFileReader.getProperty("googleSearchData");
+    String dropDownSelectionWord = ConfigFileReader.getProperty("dropDownSelectionWord");
     String managedApp = ConfigFileReader.getProperty("manageApplication");
-    String dropDownList = ConfigFileReader.getProperty("list");
+
 
 
     @Test
     public void  testSeleniumCaseStudy()  {
 
         googleSearchPage = new GoogleSearchPage(driver);
-        googleSearchPage.enterSearchDataAndProceed(searchData);
+        googleSearchPage.enterSearchDataAndProceed(googleSearchData);
         orangeLinksPage = new OrangeLinksPage(driver);
         orangeLinksPage.clickOnFirstLink();
         orangeWebsitePage = new OrangeWebsitePage(driver);
         orangeWebsitePage.clickOnAllProductFrmSolution();
         orangeProductsPage = new OrangeProductsPage(driver);
-        orangeProductsPage.selectCloud();
-        Assert.assertThat(orangeProductsPage.getCurrentUrl(), StringContains.containsString(dropDownWord));
+        orangeProductsPage.selectProductByName(dropDownSelectionWord);
+        orangeProductsPage.clickOnApplyButton();
+        Assert.assertThat(orangeProductsPage.getCurrentUrl(), StringContains.containsString(dropDownSelectionWord));
         orangeCloudPage = new OrangeCloudPage(driver);
         orangeCloudPage.clickOnManagedAppLink();
         Assert.assertThat(orangeCloudPage.getCurrentUrl(), StringContains.containsString(managedApp));

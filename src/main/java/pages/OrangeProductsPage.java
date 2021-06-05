@@ -4,14 +4,13 @@ package pages;
 
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class OrangeProductsPage extends BasePage {
@@ -32,24 +31,23 @@ public class OrangeProductsPage extends BasePage {
     }
 
 
-    public OrangeCloudPage selectCloud ()  {
+    public OrangeProductsPage selectProductByName (String name)  {
         Select selector = new Select(driver.findElement (By.tagName("select")));
-        List<WebElement> op = selector.getOptions();
 
-        String [] dropDownList= {"Solution","Business innovation","Cloud","Collaborative workspace"
-                ,"Customer experience","Cyberdefense","Data intelligence","Internet of Things"
-                ,"Mobile connectivity","Network transformation","Services"};
-        int size  = op.size();
-        for (int i = 0 ; i<size ; i++) {
-            String options = op.get(i).getText();
-            System.out.println(options);
-            Assert.assertEquals(op.get(i).getText(),dropDownList[i]);
+        selector.selectByVisibleText(name);
+        return this;
+    }
 
-        }
-
-
-        selector.selectByVisibleText("Cloud");
+    public OrangeCloudPage clickOnApplyButton (){
         findElement(applyButton).click();
         return new OrangeCloudPage(driver);
+    }
+
+    public List<String> getProductsNames() {
+        Select productsList = new Select(driver.findElement (By.tagName("select")));
+        return productsList.getOptions()
+                .stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package steps;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -11,9 +12,14 @@ import dataProvider.ConfigFileReader;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 @RunWith(Cucumber.class)
@@ -28,9 +34,13 @@ public class OpenManageAppFrmCloud {
     private OrangeCloudPage orangeCloudPage ;
 
 
-    String searchData = ConfigFileReader.getProperty("searchData");
-    String dropDownWord = ConfigFileReader.getProperty("search");
+    String googleSearchData = ConfigFileReader.getProperty("googleSearchData");
+    String dropDownSelectionWord = ConfigFileReader.getProperty("dropDownSelectionWord");
     String managedApp = ConfigFileReader.getProperty("manageApplication");
+
+    List<String> expectedProductNameList= Arrays.asList("Solution","Business innovation","Cloud",
+            "Collaborative workspace","Customer experience","Cyberdefense","Data intelligence",
+            "Internet of Things","Mobile connectivity","Network transformation","Services");
 
     protected static WebDriver driver ;
 
@@ -45,35 +55,42 @@ public class OpenManageAppFrmCloud {
         driver.navigate().to(URl);
     }
 
-    @Given("^user search for Orange Business services$")
-    public void the_user_search_for_Orange_Business(){
+    @Given("^google website opened successfully$")
+    public void user_search_for_Orange_Business(){
 
         googleSearchPage = new GoogleSearchPage(driver);
-        googleSearchPage.enterSearchDataAndProceed(searchData);
+        googleSearchPage.enterSearchDataAndProceed(googleSearchData);
     }
 
-    @When("^user select first link$")
-    public void he_click_on_first_link(){
+    @When("^user select first orange link$")
+    public void click_on_first_link(){
         orangeLinksPage = new OrangeLinksPage(driver);
         orangeLinksPage.clickOnFirstLink();
     }
 
-    @And("^select all products from solution with viewing all options$")
-    public void he_select_all_product_from_solution(){
+    @And("^select all products from solution$")
+    public void select_all_product_from_solution(){
         orangeWebsitePage = new OrangeWebsitePage(driver);
         orangeWebsitePage.clickOnAllProductFrmSolution();
     }
 
-
-    @Then("^choose cloud with clicking apply$")
-    public void he_choose_cloud() {
+    @Then("^get all product list values$")
+    public void get_all_product_values(){
         orangeProductsPage = new OrangeProductsPage(driver);
-        orangeProductsPage.selectCloud();
-        Assert.assertThat(orangeProductsPage.getCurrentUrl(), StringContains.containsString(dropDownWord));
+        List<String> actualProductNameList = orangeProductsPage.getProductsNames();
+        Assert.assertEquals(expectedProductNameList.size(), actualProductNameList.size());
+        Assert.assertTrue(actualProductNameList.containsAll(expectedProductNameList));
     }
 
-    @And("^choose manage application from cloud$")
-    public void he_open_manage_application_frm_cloud(){
+    @When("^choose cloud with clicking apply$")
+    public void choose_cloud_option_and_click_apply() {
+        orangeProductsPage = new OrangeProductsPage(driver);
+        orangeProductsPage.selectProductByName(dropDownSelectionWord);
+        orangeProductsPage.clickOnApplyButton();
+    }
+
+    @And("^choose manage application from cloud option$")
+    public void open_manage_application_frm_cloud(){
         orangeCloudPage = new OrangeCloudPage(driver);
         orangeCloudPage.clickOnManagedAppLink();
     }
@@ -84,7 +101,13 @@ public class OpenManageAppFrmCloud {
     }
 
     @After
-    public static void tearDown(){
+    public static void tearDown(Scenario scenario){
+        if(scenario.isFailed()) {
+            final byte[] screenshot = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.BYTES);
+            scenario.embed(screenshot, "image/png");
+
+        }
         driver.quit();
     }
 
